@@ -1,10 +1,13 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-//Creates class for the squares for the board 
-//This is a single square 
+//Functional component for the square. 
+//Since square is only providing a return can use this syntac instead of creating a class that extends the React.Component
 function Square(props) {
+  //Only returns a clickable button that inherits the onClick method from the board
+  //NOTE = this cannot be props.onClick() - that will immediately invoke an endlessloop of function calls that will swallow the world whole. You have been warned.
   return (
     <button className="square" onClick={props.onClick}>
       {props.value}
