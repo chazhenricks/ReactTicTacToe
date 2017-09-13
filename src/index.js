@@ -5,6 +5,7 @@ import './index.css';
 
 //Functional component for the square. 
 //Since square is only providing a return can use this syntac instead of creating a class that extends the React.Component
+//takes aregument props that get passed down to it from the board class
 function Square(props) {
   //Only returns a clickable button that inherits the onClick method from the board
   //NOTE = this cannot be props.onClick() - that will immediately invoke an endlessloop of function calls that will swallow the world whole. You have been warned.
@@ -15,9 +16,14 @@ function Square(props) {
   );
 }
   
-  //This is the class for the board
+  //This is the ES6 class for the board
+  //extends keyword defines it as a subclass of the ReactComponent overloard class. All hail.
+  //NOTE if there is a constructor in a subclass - it needs to call super(); See the Game class below. 
   class Board extends React.Component {
 
+    //this defines our renderSquare method. 
+    //We pass it i, which will later be the number value of the squares. 
+    //We give each square an initial value as well as a prop onClick
     renderSquare(i) {
       return (
         <Square
@@ -27,6 +33,10 @@ function Square(props) {
       );
     }
   
+    //defines the actual render of the Board component
+    //spits back out 3 divs, each containing 3 renderings of a square
+    //We can only render one element in a component, but that component can have many childre, hence the single div with nested divs
+    //note it is className= and not class=
     render() {
       return (
         <div>
@@ -51,8 +61,11 @@ function Square(props) {
   }
   
   //class that contains the entire game. 
+  //This will house all of the logic of the game
   class Game extends React.Component {
 
+    //The constructor contains the initial state of the game, which is all empty.
+    //State contains 3 key/value pairs - history, stepNumber(turn), and who is next
     constructor() {
       super();
       this.state = {
@@ -64,9 +77,11 @@ function Square(props) {
       };
     }
 
-    //defines the onclick method that gets passed down to each of the squares 
+    //defines the onclick method that gets passed down to the board, and thus the square
     handleClick(i) {
+      //history is updated with the new step number as turns go
       const history = this.state.history.slice(0, this.state.stepNumber + 1);
+      //current turn is history length - 1
       const current = history[history.length - 1];
       const squares = current.squares.slice();
 
@@ -74,6 +89,7 @@ function Square(props) {
         return;
       }
 
+      //toggles between if X or O goes next
       squares[i] = this.state.xIsNext ? 'X' : 'O';
 
       this.setState({
@@ -144,6 +160,7 @@ function Square(props) {
     document.getElementById('root')
   );
 
+  //function to determine winner.
   function calculateWinner(squares) {
     const lines = [
       [0, 1, 2],
